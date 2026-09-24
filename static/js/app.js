@@ -22,7 +22,22 @@
   // moving down, or as soon as the buy section itself comes into view. Scrolling
   // back up near the top tucks it away again so the hero stays uncluttered.
   const bar = document.querySelector('.buybar');
-  const REVEAL_AFTER_PX = 220;   // past the hero, on any screen
+
+  // Reveal only once the buyer is genuinely past the hero, rather than after a
+  // fixed pixel offset. A hardcoded 220-250px fired while the hero was still on
+  // screen (the hero is ~950px tall), so the bar appeared almost immediately.
+  // Tie it to the hero's actual height, with a floor so short pages still work.
+  // Cached: getBoundingClientRect forces layout, so it must never be called
+  // from the scroll handler. Re-measured on load and on resize only.
+  let revealAfterPx = 600;
+
+  function measureRevealThreshold() {
+    const hero = document.querySelector('.hero');
+    const heroHeight = hero ? hero.getBoundingClientRect().height : 0;
+    // Two thirds of the hero: far enough that the headline and CTA have been
+    // read, early enough that the bar is there by the time they look for it.
+    revealAfterPx = Math.max(600, Math.round(heroHeight * 0.66));
+  }
   let lastY = window.scrollY;
   let ticking = false;
 
@@ -39,7 +54,7 @@
   function updateBar() {
     const y = window.scrollY;
     const goingDown = y > lastY;
-    const nearTop = y < REVEAL_AFTER_PX;
+    const nearTop = y < revealAfterPx;
 
     // A programmatic jump to the buy point always wins while it is settling.
     // Without this, the direction logic can hide the bar mid-flight on a long
@@ -102,10 +117,12 @@
 
   window.addEventListener('resize', () => {
     measureBuySection();
+    measureRevealThreshold();
     updateBar();
   }, { passive: true });
 
   measureBuySection();
+  measureRevealThreshold();
 
   // Any explicit Buy link (nav button, hero CTA) scrolls to the point where the
   // bar lives and reveals it. The bar is sticky and parked at the document
@@ -147,7 +164,9 @@
     requestAnimationFrame(() => goToBuy(null));
   }
 
-  setBarVisible(false);
+  // Let updateBar() decide the initial state rather than forcing it hidden -
+  // otherwise landing mid-page (a refresh, or a deep link) flashes the bar in
+  // and back out.
   updateBar();
 
   // A quote is cached server-side against the variant it was priced for, so
