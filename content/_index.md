@@ -74,17 +74,19 @@ gallery:
       w: 675
       h: 900
 
-whyNotMagnets:
-  headline: "Why we didn't build this around a magnet"
-  items:
-    - title: "Airflow lifts, magnets don't resist it"
-      body: "A magnet only holds straight down. Air moving under the plate at speed pulls it sideways and up — a direction magnets do nothing about."
-    - title: "Wet steel loses grip"
-      body: "Water film between a magnet and a wet bumper measurably cuts holding force. A mechanical lock doesn't care if it's raining."
-    - title: "No steel backing plate to add weight or rust"
-      body: "Magnetic mounts need a steel plate glued to your bumper. Ours is two small printed parts — lighter, and nothing to corrode."
-    - title: "No messy adhesive residue"
-      body: "Magnet mounts and tape leave glue on your bumper and your plate. The Button stays screwed into the original mounting point, and the plate lifts straight off it."
+# --- whyNotMagnets (hidden, restore by uncommenting) ---
+# whyNotMagnets:
+#   headline: "Why we didn't build this around a magnet"
+#   items:
+#     - title: "Airflow lifts, magnets don't resist it"
+#       body: "A magnet only holds straight down. Air moving under the plate at speed pulls it sideways and up — a direction magnets do nothing about."
+#     - title: "Wet steel loses grip"
+#       body: "Water film between a magnet and a wet bumper measurably cuts holding force. A mechanical lock doesn't care if it's raining."
+#     - title: "No steel backing plate to add weight or rust"
+#       body: "Magnetic mounts need a steel plate glued to your bumper. Ours is two small printed parts — lighter, and nothing to corrode."
+#     - title: "No messy adhesive residue"
+#       body: "Magnet mounts and tape leave glue on your bumper and your plate. The Button stays screwed into the original mounting point, and the plate lifts straight off it."
+# --- end whyNotMagnets ---
 
 specs:
   headline: "Specification"
@@ -130,13 +132,15 @@ faq:
     - q: "How is it delivered?"
       a: "Free delivery on every order within Singapore. Our number plates are made to order in-house, crafted locally in Singapore."
 
-testimonials:
-  headline: "From the first batch"
-  items:
-    - quote: "Ten-minute install, and it clicks into place — you can feel it's locked without checking."
-      author: "Wei Jie"
-    - quote: "Had a magnetic mount lift at highway speed once. Wanted something that couldn't do that again."
-      author: "Aisha"
-    - quote: "No visible screws from the front, which was the whole reason I didn't want the old bracket kind."
-      author: "Marcus"
+# --- testimonials (hidden, restore by uncommenting) ---
+# testimonials:
+#   headline: "From the first batch"
+#   items:
+#     - quote: "Ten-minute install, and it clicks into place — you can feel it's locked without checking."
+#       author: "Wei Jie"
+#     - quote: "Had a magnetic mount lift at highway speed once. Wanted something that couldn't do that again."
+#       author: "Aisha"
+#     - quote: "No visible screws from the front, which was the whole reason I didn't want the old bracket kind."
+#       author: "Marcus"
+# (closing delimiter follows)
 ---

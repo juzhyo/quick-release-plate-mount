@@ -59,18 +59,6 @@
   </div>
 </section>
 
-<section class="whynot">
-  <h2>{{ $p.whyNotMagnets.headline }}</h2>
-  <div class="whynot__grid">
-    {{ range $p.whyNotMagnets.items }}
-    <div class="whynot__item">
-      <h3>{{ .title }}</h3>
-      <p>{{ .body }}</p>
-    </div>
-    {{ end }}
-  </div>
-</section>
-
 <section id="specs" class="specs">
   <h2>{{ $p.specs.headline }}</h2>
   <dl class="specs__list">
@@ -100,18 +88,6 @@
   <ul>
     {{ range $p.whatsIncluded.items }}<li>{{ . }}</li>{{ end }}
   </ul>
-</section>
-
-<section class="testimonials">
-  <h2>{{ $p.testimonials.headline }}</h2>
-  <div class="testimonials__grid">
-    {{ range $p.testimonials.items }}
-    <blockquote>
-      <p>&ldquo;{{ .quote }}&rdquo;</p>
-      <cite>{{ .author }}</cite>
-    </blockquote>
-    {{ end }}
-  </div>
 </section>
 
 <section id="faq" class="faq">
