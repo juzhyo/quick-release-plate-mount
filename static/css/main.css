@@ -1,9 +1,9 @@
-/* TORQ — design tokens
+/* Alisont Design — design tokens
    Ink:      #101113   near-black, dark sections & text
    Base:     #FAFAFA   page background
    Steel:    #6B7280   secondary text
    Line:     #E4E4E7   hairline borders
-   Accent:   #FF5A1F   anodized-orange — the twist-lock pin color
+   Accent:   #FF5A1F   anodized-orange — the lock pin color
    Aluminum: #C9CCD1   metallic highlight, dark-section text
 */
 
@@ -65,8 +65,63 @@ section { max-width: var(--max); margin: 0 auto; padding: 96px 24px; }
 }
 .hero__render { margin-top: 64px; }
 .hero__svg { width: 100%; max-width: 640px; height: auto; }
+.hero__img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  display: block;
+}
 
-/* Reassurance strip */
+/* --- install video --- */
+.install-video { margin-top: 64px; text-align: center; }
+.install-video h3 { font-size: clamp(22px, 3vw, 28px); margin-bottom: 8px; }
+.install-video__lede { color: var(--steel); max-width: 60ch; margin: 0 auto 24px; }
+.install-video__player {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  display: block;
+  margin: 0 auto;
+}
+.install-video__steps {
+  display: inline-block;
+  text-align: left;
+  max-width: 60ch;
+  margin: 28px auto 0;
+  padding-left: 20px;
+  color: var(--steel);
+  line-height: 1.7;
+}
+
+/* --- gallery --- */
+.gallery { text-align: center; }
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+.gallery__item { margin: 0; }
+.gallery__item img {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  display: block;
+}
+.gallery__item figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--steel);
+  line-height: 1.5;
+}
+
+.included { text-align: center; }
 .reassurance {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
   border-top: 1px solid var(--line); padding-top: 56px; padding-bottom: 56px;

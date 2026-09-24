@@ -6,14 +6,10 @@
   <h1 class="hero__headline">{{ $p.hero.headline }}</h1>
   <p class="hero__subhead">{{ $p.hero.subhead }}</p>
   <a href="#buy" class="hero__cta">{{ $p.hero.cta }} — {{ $p.hero.price }}</a>
-  <div class="hero__render" aria-hidden="true">
-    <svg viewBox="0 0 640 400" class="hero__svg">
-      <rect x="0" y="0" width="640" height="400" fill="none"/>
-      <rect x="180" y="120" width="280" height="180" rx="14" fill="none" stroke="var(--line)" stroke-width="2"/>
-      <circle cx="240" cy="180" r="16" fill="var(--accent)"/>
-      <circle cx="400" cy="180" r="16" fill="var(--accent)"/>
-      <rect x="220" y="230" width="200" height="40" rx="6" fill="none" stroke="var(--aluminum)" stroke-width="2"/>
-    </svg>
+  <div class="hero__render">
+    <img src="/img/oncar-mounts.jpg"
+         alt="Alisont Design frameless number plate mount fitted to the tailgate of a white car, with the plate removed showing the two mounting buttons"
+         class="hero__img" width="1050" height="1400" loading="eager">
   </div>
 </section>
 
@@ -44,6 +40,24 @@
     </div>
     {{ end }}
   </div>
+
+  <div class="install-video">
+    <h3>{{ $p.installVideo.headline }}</h3>
+    <p class="install-video__lede">{{ $p.installVideo.body }}</p>
+    <video class="install-video__player"
+           controls
+           preload="metadata"
+           playsinline
+           poster="/video/install-poster.jpg"
+           width="720" height="1280">
+      <source src="/video/install.mp4" type="video/mp4">
+      Your browser doesn't support embedded video.
+      <a href="/video/install.mp4">Download the installation video</a> instead.
+    </video>
+    <ol class="install-video__steps">
+      {{ range $p.installVideo.steps }}<li>{{ . }}</li>{{ end }}
+    </ol>
+  </div>
 </section>
 
 <section class="whynot">
@@ -68,6 +82,18 @@
     </div>
     {{ end }}
   </dl>
+</section>
+
+<section class="gallery">
+  <h2>{{ $p.gallery.headline }}</h2>
+  <div class="gallery__grid">
+    {{ range $p.gallery.images }}
+    <figure class="gallery__item">
+      <img src="{{ .src }}" alt="{{ .alt }}" loading="lazy" width="{{ .w }}" height="{{ .h }}">
+      <figcaption>{{ .caption }}</figcaption>
+    </figure>
+    {{ end }}
+  </div>
 </section>
 
 <section class="included">
