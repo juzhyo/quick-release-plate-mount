@@ -1,0 +1,12 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">{{ .Site.Params.brand }}</div>
+    <div class="footer__links">
+      <a href="mailto:{{ .Site.Params.supportEmail }}">{{ .Site.Params.supportEmail }}</a>
+      <a href="/shipping">Shipping</a>
+      <a href="/returns">Returns</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="footer__legal">© {{ now.Year }} {{ .Site.Params.brand }}. Designed and printed in Singapore.</div>
+  </div>
+</footer>

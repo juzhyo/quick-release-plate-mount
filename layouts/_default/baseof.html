@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+{{ partial "head.html" . }}
+<body>
+  {{ partial "nav.html" . }}
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "buybar.html" . }}
+  {{ partial "footer.html" . }}
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+baseURL = "https://aliston"
+languageCode = "en-sg"
+title = "Quick-Release Number Plate Mount - AlisonT Design"
+
+
+# Hugo ships CSS/JS as-is; no build step, no node dependency.
+[build]
+  writeStats = false
+
+[params]
+  brand           = "AlisonT Design"
+  tagline         = "The Last Plate Holder You'll Ever Buy"
+  supportEmail    = "support@your-domain.example"
+  currency        = "SGD"
+  # Stripe PUBLISHABLE key only — never put the secret key here, this file is public.
+  stripePublishableKey = "pk_live_REPLACE_ME"
+  # Where quotes are requested from by default (your warehouse / fulfilment address).
+  originCountry   = "SG"
+  originPostal    = "018956"
+
+[outputs]
+  home = ["HTML"]
+
+[minify]
+  disableXML = true

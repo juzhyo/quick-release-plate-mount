@@ -1,0 +1,40 @@
+<section id="buy" class="buybar" aria-label="Purchase">
+  <div class="buybar__inner">
+    <div class="buybar__price">
+      <span class="buybar__amount">{{ .Site.Params.currency }} 49</span>
+      <span class="buybar__unit">per kit</span>
+    </div>
+
+    <div class="buybar__field">
+      <label for="qty">Qty</label>
+      <select id="qty">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+      </select>
+    </div>
+
+    <div class="buybar__field buybar__field--grow">
+      <label for="dest-country">Ship to</label>
+      <select id="dest-country">
+        <option value="SG">Singapore</option>
+        <option value="MY">Malaysia</option>
+        <option value="US">United States</option>
+        <option value="GB">United Kingdom</option>
+        <option value="AU">Australia</option>
+      </select>
+    </div>
+
+    <div class="buybar__field buybar__field--grow">
+      <label for="dest-postal">Postal code</label>
+      <input id="dest-postal" type="text" inputmode="numeric" placeholder="e.g. 018956">
+    </div>
+
+    <button id="get-rates" type="button" class="buybar__secondary">Get shipping</button>
+
+    <div id="rate-options" class="buybar__rates" aria-live="polite"></div>
+
+    <button id="checkout" type="button" class="buybar__cta" disabled>
+      Checkout
+    </button>
+  </div>
+  <p id="buybar-status" class="buybar__status" role="status"></p>
+</section>

@@ -1,0 +1,41 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Params.brand }}{{ end }}</title>
+  <meta name="description" content="{{ .Description | default .Site.Params.tagline }}">
+
+  <meta property="og:title" content="{{ .Site.Title }}">
+  <meta property="og:description" content="{{ .Description | default .Site.Params.tagline }}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="{{ "img/og-image.jpg" | absURL }}">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+  <!-- Public (non-secret) Stripe key + shop config, read by /js/app.js -->
+  <script>
+    window.TORQ_CONFIG = {
+      stripePublishableKey: {{ .Site.Params.stripePublishableKey }},
+      currency: {{ .Site.Params.currency }},
+      originCountry: {{ .Site.Params.originCountry }}
+    };
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ .Site.Params.brand }} Quick-Release Number Plate Mount",
+    "description": {{ .Description | default .Site.Params.tagline | jsonify }},
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": {{ .Site.Params.currency | jsonify }},
+      "price": "49.00",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+</head>
