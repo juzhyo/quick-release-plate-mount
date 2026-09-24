@@ -46,33 +46,33 @@ gallery:
     - src: "/img/kit-x2sets.jpg"
       alt: "The full Alisont Design kit laid out: two base mounting plates with tape applied, two mounting buttons, two M6 screws, two tapping screws, and two alcohol cleaning pads"
       caption: "The full kit — two of everything, enough for a front and rear plate."
-      w: 1400
-      h: 1400
+      w: 900
+      h: 900
     - src: "/img/button-closeup.jpg"
       alt: "Close-up of a single mounting button showing the printed body and the central metal post"
       caption: "The Button — the part that screws into your existing plate hole."
-      w: 1290
-      h: 1256
+      w: 900
+      h: 876
     - src: "/img/oncar-mounts.jpg"
       alt: "Two mounting buttons fitted to the tailgate of a white car with the plate removed"
       caption: "Fitted to the car, plate off — this is what the mounts look like in place."
-      w: 1050
-      h: 1400
+      w: 675
+      h: 900
     - src: "/img/oncar-pads.jpg"
       alt: "Base mounting plates with 3M adhesive pads on the back, positioned at the plate area of a white car"
       caption: "The base plates with their 3M pads — ready to bond to the back of your plate."
-      w: 1050
-      h: 1400
+      w: 675
+      h: 900
     - src: "/img/kit-flatlay-a.jpg"
       alt: "Kit components including the printed base, mounting buttons, screws and alcohol swabs"
       caption: "Included: two alcohol pads for cleaning the surface before bonding."
-      w: 1186
-      h: 1141
+      w: 900
+      h: 866
     - src: "/img/kit-flatlay-c.jpg"
       alt: "Full kit laid out showing both base plates, screws, washers and cleaning pads"
       caption: "Everything needed is in the box — no trips to the hardware store."
-      w: 1050
-      h: 1400
+      w: 675
+      h: 900
 
 whyNotMagnets:
   headline: "Why we didn't build this around a magnet"

@@ -79,14 +79,18 @@ section { max-width: var(--max); margin: 0 auto; padding: 96px 24px; }
 .install-video h3 { font-size: clamp(22px, 3vw, 28px); margin-bottom: 8px; }
 .install-video__lede { color: var(--steel); max-width: 60ch; margin: 0 auto 24px; }
 .install-video__player {
+  /* Landscape crop (16:9). No width/height attributes on the <video> element,
+     so CSS owns sizing and nothing fights the max-width. Centre explicitly. */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   width: 100%;
-  max-width: 360px;
+  max-width: 640px;
   height: auto;
+  aspect-ratio: 16 / 9;   /* reserves the box before the poster loads */
   border-radius: 16px;
   border: 1px solid var(--line);
   background: var(--ink);
-  display: block;
-  margin: 0 auto;
 }
 .install-video__steps {
   display: inline-block;
