@@ -3,22 +3,22 @@ title: "Alisont Design Frameless Number Plate Kit"
 description: "A mechanical plate lock, not a magnet. Screw The Button on once, drop your plate over it, lock it down. Made in Singapore, 2-year guarantee."
 
 hero:
-  eyebrow: "The Smart Locking System"
-  headline: "Your plate, on a lock, not a magnet."
-  subhead: "Slot in, push down, locked in. A mechanical lock replaces the double-sided tape and magnets most plate mounts still rely on — no messy adhesive residue."
+  eyebrow: "Quick Release Plate Mount Locking System"
+  headline: "Your plate, on lock."
+  subhead: "Slot in, push down, lock in. A mechanical lock replaces the double-sided tape and magnets most plate mounts still rely on — no messy adhesive residue."
   cta: "Order the kit"
   price: "S$34.90"
 
 trustbar:
   - title: "2-year guarantee"
-    body: "If it falls off or breaks within 2 years, we replace it — no questions asked."
+    body: "If it falls off or breaks within 2 years, we will replace it — no questions asked."
   - title: "Free SG delivery"
     body: "Free delivery on every order within Singapore."
   - title: "Made in Singapore"
     body: "Designed, printed and made to order in-house, locally in Singapore."
 
 mechanism:
-  headline: "Screw it on once. Then slot in, push down, locked in."
+  headline: "Screw it on, and lock it in."
   body: "The Button screws into your existing plate mounting point. The base mounting plate is bonded to the back of your number plate with double-sided tape already applied. Drop the plate over The Button and push down — the base plate locks mechanically onto it. It is built to stay on. Reverse the motion to remove the plate for cleaning or a car wash."
 
 howItWorks:
