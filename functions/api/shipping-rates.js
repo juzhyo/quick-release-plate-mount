@@ -1,8 +1,8 @@
 // POST /api/shipping-rates
-// Body: { destinationCountry, destinationPostal, quantity }
+// Body: { destinationCountry, destinationPostal, variant }   variant: 'one' | 'two'
 // Returns: { quotes: [{ quoteId, carrier, service, amount, currency, etaDays }] }
 //
-// Requires these Cloudflare Pages bindings (Pages dashboard → Settings → Functions):
+// Requires these Cloudflare Pages bindings (Pages dashboard → Settings → Bindings):
 //   env vars:  DHL_CLIENT_ID, DHL_CLIENT_SECRET, FEDEX_CLIENT_ID, FEDEX_CLIENT_SECRET,
 //              SHOP_ORIGIN_COUNTRY, SHOP_ORIGIN_POSTAL, PARCEL_WEIGHT_KG, PARCEL_DIMS_CM
 //   KV binding: RATES_KV  (stores the authoritative quote so /api/checkout can't be
@@ -18,13 +18,20 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'invalid JSON' }, 400);
   }
 
-  const { destinationCountry, destinationPostal, quantity } = body;
-  if (!destinationCountry || !destinationPostal || !quantity) {
-    return json({ error: 'missing destinationCountry, destinationPostal, or quantity' }, 400);
+  const { destinationCountry, destinationPostal, variant } = body;
+  if (!destinationCountry || !destinationPostal || !variant) {
+    return json({ error: 'missing destinationCountry, destinationPostal, or variant' }, 400);
+  }
+  if (variant !== 'one' && variant !== 'two') {
+    return json({ error: 'unknown variant' }, 400);
   }
 
+  // How many kits in the parcel. 'one' = a front+back set (2 plates);
+  // 'two' = two such sets. Drives parcel weight, and therefore the rate.
+  const sets = variant === 'two' ? 2 : 1;
+
   const parcel = {
-    weightKg: Number(env.PARCEL_WEIGHT_KG || 0.3) * quantity,
+    weightKg: Number(env.PARCEL_WEIGHT_KG || 0.3) * sets,
     dims: (env.PARCEL_DIMS_CM || '20x15x5').split('x').map(Number), // L x W x H cm
   };
 
@@ -46,7 +53,7 @@ export async function onRequestPost({ request, env }) {
     q.quoteId = crypto.randomUUID();
     await env.RATES_KV.put(
       `quote:${q.quoteId}`,
-      JSON.stringify({ ...q, quantity, destinationCountry, destinationPostal }),
+      JSON.stringify({ ...q, variant, destinationCountry, destinationPostal }),
       { expirationTtl: QUOTE_TTL_SECONDS }
     );
   }
@@ -144,15 +151,27 @@ async function quoteFedEx(env, country, postal, parcel) {
 // this carrier through a multi-carrier aggregator (Shippo / EasyParcel /
 // Easyship) that already resells SingPost rates via one API.
 async function quoteSingPost(env, country, postal, parcel) {
-  const flatRates = { SG: 3.5, MY: 12, AU: 22, GB: 24, US: 26 };
+  // Free delivery on every order within Singapore — matches the storefront's
+  // "Free SG delivery" promise and the TikTok Shop listing.
+  if (country === 'SG') {
+    return [{
+      carrier: 'SingPost',
+      service: 'Free Delivery (Singapore)',
+      amount: 0,
+      currency: 'SGD',
+      etaDays: 2,
+      free: true,
+    }];
+  }
+  const flatRates = { MY: 12, AU: 22, GB: 24, US: 26 };
   const base = flatRates[country];
   if (base === undefined) return null;
   return [{
     carrier: 'SingPost',
-    service: country === 'SG' ? 'Normal Mail' : 'Air Mail',
+    service: 'Air Mail',
     amount: base + Math.max(0, parcel.weightKg - 0.5) * 4,
     currency: 'SGD',
-    etaDays: country === 'SG' ? 2 : 10,
+    etaDays: 10,
   }];
 }
 

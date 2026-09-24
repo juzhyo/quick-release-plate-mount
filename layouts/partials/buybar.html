@@ -1,14 +1,19 @@
 <section id="buy" class="buybar" aria-label="Purchase">
   <div class="buybar__inner">
     <div class="buybar__price">
-      <span class="buybar__amount">{{ .Site.Params.currency }} 49</span>
-      <span class="buybar__unit">per kit</span>
+      <span class="buybar__amount">{{ printf "S$%.2f" .Site.Params.priceSGD }}</span>
+      <span class="buybar__unit">One Bumper (front + back)</span>
     </div>
 
     <div class="buybar__field">
-      <label for="qty">Qty</label>
-      <select id="qty">
-        <option>1</option><option>2</option><option>3</option><option>4</option>
+      <label for="variant">Kit</label>
+      <select id="variant">
+        <option value="one" data-price="{{ printf "%.2f" .Site.Params.priceSGD }}">
+          One Bumper — {{ printf "S$%.2f" .Site.Params.priceSGD }}
+        </option>
+        <option value="two" data-price="{{ printf "%.2f" .Site.Params.priceTwoSGD }}">
+          Two Bumper — {{ printf "S$%.2f" .Site.Params.priceTwoSGD }}
+        </option>
       </select>
     </div>
 

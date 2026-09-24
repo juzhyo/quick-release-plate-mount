@@ -1,10 +1,21 @@
 // POST /api/checkout
-// Body: { quantity, quoteId }
+// Body: { variant, quoteId }   variant: 'one' | 'two'
 // Returns: { url }  — redirect the browser here (Stripe-hosted Checkout page)
 //
-// Requires env vars: STRIPE_SECRET_KEY, PRODUCT_PRICE_ID (a Price created in the
-// Stripe Dashboard for the plate-mount kit), SITE_URL
+// Requires env vars: STRIPE_SECRET_KEY, SITE_URL, and one Stripe Price per kit:
+//   PRODUCT_PRICE_ID_ONE  (One Bumper, S$34.90 -> unit_amount 3490)
+//   PRODUCT_PRICE_ID_TWO  (Two Bumper, S$52.90 -> unit_amount 5290)
 // Requires KV binding: RATES_KV (shared with shipping-rates.js)
+//
+// The kit price is resolved from the VARIANT NAME server-side via a fixed map,
+// never from a number supplied by the browser — same trust model as the
+// shipping quote, which is re-read from KV rather than accepted from the client.
+
+// variant -> env var holding the Stripe Price ID
+const VARIANT_PRICE_ENV = {
+  one: 'PRODUCT_PRICE_ID_ONE',
+  two: 'PRODUCT_PRICE_ID_TWO',
+};
 
 export async function onRequestPost({ request, env }) {
   let body;
@@ -14,9 +25,21 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'invalid JSON' }, 400);
   }
 
-  const { quantity, quoteId } = body;
-  if (!quantity || !quoteId) {
-    return json({ error: 'missing quantity or quoteId' }, 400);
+  const { variant, quoteId } = body;
+  if (!variant || !quoteId) {
+    return json({ error: 'missing variant or quoteId' }, 400);
+  }
+
+  // Reject anything that isn't a known variant. Do NOT fall through to a
+  // default — an unrecognised value must fail loudly, not silently charge
+  // whichever price happened to be first.
+  const priceEnvKey = VARIANT_PRICE_ENV[variant];
+  if (!priceEnvKey) {
+    return json({ error: 'unknown variant' }, 400);
+  }
+  const priceId = env[priceEnvKey];
+  if (!priceId) {
+    return json({ error: `shipping configuration error: ${priceEnvKey} is not set` }, 500);
   }
 
   // Re-read the quote WE cached server-side — never trust a price from the client.
@@ -25,24 +48,29 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'quote expired, please re-fetch shipping rates' }, 400);
   }
   const quote = JSON.parse(raw);
-  if (quote.quantity !== quantity) {
-    return json({ error: 'quantity no longer matches the quoted shipping rate' }, 400);
+  if (quote.variant !== variant) {
+    return json({ error: 'variant no longer matches the quoted shipping rate' }, 400);
   }
 
   const params = new URLSearchParams();
   params.append('mode', 'payment');
   params.append('success_url', `${env.SITE_URL}/order-confirmed?session_id={CHECKOUT_SESSION_ID}`);
   params.append('cancel_url', `${env.SITE_URL}/#buy`);
-  params.append('line_items[0][price]', env.PRODUCT_PRICE_ID);
-  params.append('line_items[0][quantity]', String(quantity));
+  params.append('line_items[0][price]', priceId);
+  params.append('line_items[0][quantity]', '1');
 
   // Shipping as its own line item priced from the live courier quote.
-  params.append('line_items[1][price_data][currency]', quote.currency.toLowerCase());
-  params.append('line_items[1][price_data][product_data][name]', `Shipping — ${quote.carrier} ${quote.service}`);
-  params.append('line_items[1][price_data][unit_amount]', String(Math.round(quote.amount * 100)));
-  params.append('line_items[1][quantity]', '1');
+  // Skip the line entirely when the quote is free (SG delivery) — Stripe would
+  // accept unit_amount=0, but a "S$0.00 shipping" row only confuses buyers.
+  if (!quote.free && quote.amount > 0) {
+    params.append('line_items[1][price_data][currency]', quote.currency.toLowerCase());
+    params.append('line_items[1][price_data][product_data][name]', `Shipping — ${quote.carrier} ${quote.service}`);
+    params.append('line_items[1][price_data][unit_amount]', String(Math.round(quote.amount * 100)));
+    params.append('line_items[1][quantity]', '1');
+  }
 
   params.append('shipping_address_collection[allowed_countries][0]', quote.destinationCountry);
+  params.append('metadata[variant]', variant);
   params.append('metadata[carrier]', quote.carrier);
   params.append('metadata[service]', quote.service);
   params.append('metadata[quoteId]', quoteId);

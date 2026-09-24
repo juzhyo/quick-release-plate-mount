@@ -17,7 +17,7 @@
 
   <!-- Public (non-secret) Stripe key + shop config, read by /js/app.js -->
   <script>
-    window.TORQ_CONFIG = {
+    window.ALISONT_CONFIG = {
       stripePublishableKey: {{ .Site.Params.stripePublishableKey }},
       currency: {{ .Site.Params.currency }},
       originCountry: {{ .Site.Params.originCountry }}
@@ -33,7 +33,7 @@
     "offers": {
       "@type": "Offer",
       "priceCurrency": {{ .Site.Params.currency | jsonify }},
-      "price": "49.00",
+      "price": {{ printf "%.2f" .Site.Params.priceSGD }},
       "availability": "https://schema.org/InStock"
     }
   }

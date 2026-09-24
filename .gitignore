@@ -1,0 +1,18 @@
+# Hugo build output — regenerate with `hugo`, never commit
+public/
+resources/_gen/
+
+# Hugo/dev artefacts
+.hugo_build.lock
+
+# Node (hugo-bin is vendored via package.json)
+node_modules/
+
+# Local env / secrets — Cloudflare Pages holds the real values
+.env
+.env.*
+.dev.vars
+
+# OS
+.DS_Store
+Thumbs.db

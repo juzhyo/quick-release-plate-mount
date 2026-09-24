@@ -1,6 +1,6 @@
 baseURL = "https://aliston"
 languageCode = "en-sg"
-title = "Quick-Release Number Plate Mount - AlisonT Design"
+title = "Alisont Design Frameless Number Plate Kit"
 
 
 # Hugo ships CSS/JS as-is; no build step, no node dependency.
@@ -8,10 +8,17 @@ title = "Quick-Release Number Plate Mount - AlisonT Design"
   writeStats = false
 
 [params]
-  brand           = "AlisonT Design"
-  tagline         = "The Last Plate Holder You'll Ever Buy"
-  supportEmail    = "support@your-domain.example"
+  brand           = "Alisont Design"
+  tagline         = "The Smart Locking System — screw it on once, slot in, push down, locked in."
+  supportEmail    = "alisontdesign@gmail.com"
   currency        = "SGD"
+  # SINGLE SOURCE OF TRUTH for DISPLAYED prices. Must match the Stripe Prices:
+  #   One Bumper  = S$34.90  -> PRODUCT_PRICE_ID_ONE   (unit_amount 3490)
+  #   Two Bumper  = S$52.90  -> PRODUCT_PRICE_ID_TWO   (unit_amount 5290)
+  # Stripe is authoritative for what is CHARGED; this is authoritative for what
+  # is SHOWN. Nothing in the code enforces that they agree — change both.
+  priceSGD        = 34.90
+  priceTwoSGD     = 52.90
   # Stripe PUBLISHABLE key only — never put the secret key here, this file is public.
   stripePublishableKey = "pk_live_REPLACE_ME"
   # Where quotes are requested from by default (your warehouse / fulfilment address).

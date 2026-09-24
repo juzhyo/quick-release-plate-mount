@@ -6,6 +6,6 @@
       <a href="#specs">Specs</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a href="#buy" class="nav__cta">Buy — {{ .Site.Params.currency }} 49</a>
+    <a href="#buy" class="nav__cta">Buy — {{ printf "S$%.2f" .Site.Params.priceSGD }}</a>
   </div>
 </header>

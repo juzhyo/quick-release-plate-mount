@@ -1,5 +1,5 @@
 (() => {
-  const qtyEl = document.getElementById('qty');
+  const variantEl = document.getElementById('variant');
   const countryEl = document.getElementById('dest-country');
   const postalEl = document.getElementById('dest-postal');
   const getRatesBtn = document.getElementById('get-rates');
@@ -10,6 +10,20 @@
   let selectedQuoteId = null;
 
   function setStatus(msg) { statusEl.textContent = msg || ''; }
+
+  // A quote is cached server-side against the variant it was priced for, so
+  // switching kits invalidates it — make the buyer re-fetch rather than let
+  // them check out and hit a server-side rejection.
+  function invalidateQuote(msg) {
+    selectedQuoteId = null;
+    checkoutBtn.disabled = true;
+    ratesBox.innerHTML = '';
+    if (msg) setStatus(msg);
+  }
+
+  variantEl.addEventListener('change', () => {
+    invalidateQuote('Kit changed — get shipping again for this kit.');
+  });
 
   getRatesBtn.addEventListener('click', async () => {
     if (!postalEl.value.trim()) {
@@ -28,7 +42,7 @@
         body: JSON.stringify({
           destinationCountry: countryEl.value,
           destinationPostal: postalEl.value.trim(),
-          quantity: Number(qtyEl.value)
+          variant: variantEl.value
         })
       });
 
@@ -73,7 +87,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          quantity: Number(qtyEl.value),
+          variant: variantEl.value,
           quoteId: selectedQuoteId
         })
       });
