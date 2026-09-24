@@ -31,11 +31,21 @@
   // from the scroll handler. Re-measured on load and on resize only.
   let revealAfterPx = 600;
 
+  // The bar appears as the "Before you order" FAQ section comes into view - the
+  // point where a buyer is actually weighing the purchase, rather than a fixed
+  // offset from the top. Falls back to a fraction of the hero if that section
+  // is absent (e.g. on a page without the FAQ).
   function measureRevealThreshold() {
+    const faq = document.querySelector('.faq');
+    if (faq) {
+      const docTop = faq.getBoundingClientRect().top + window.scrollY;
+      // Fire when the FAQ's top edge is 120px into the viewport, so the bar
+      // arrives just as the section starts to be read.
+      revealAfterPx = Math.max(0, Math.round(docTop - window.innerHeight + 120));
+      return;
+    }
     const hero = document.querySelector('.hero');
     const heroHeight = hero ? hero.getBoundingClientRect().height : 0;
-    // Two thirds of the hero: far enough that the headline and CTA have been
-    // read, early enough that the bar is there by the time they look for it.
     revealAfterPx = Math.max(600, Math.round(heroHeight * 0.66));
   }
   let lastY = window.scrollY;
@@ -53,8 +63,6 @@
 
   function updateBar() {
     const y = window.scrollY;
-    const goingDown = y > lastY;
-    const nearTop = y < revealAfterPx;
 
     // A programmatic jump to the buy point always wins while it is settling.
     // Without this, the direction logic can hide the bar mid-flight on a long
@@ -66,7 +74,12 @@
       return;
     }
 
-    const show = buySectionIsVisible() || (!nearTop && goingDown);
+    // Past the threshold the bar latches on and STAYS on, including while
+    // scrolling back up. Hiding it again on upward scroll made it flicker
+    // around the FAQ - the exact area where the buyer is deciding. It only
+    // retracts once they return to the top of the page.
+    const past = y >= revealAfterPx;
+    const show = past || buySectionIsVisible();
 
     setBarVisible(show);
 
