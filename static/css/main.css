@@ -66,12 +66,16 @@ section { max-width: var(--max); margin: 0 auto; padding: 96px 24px; }
 .hero__render { margin-top: 64px; }
 .hero__svg { width: 100%; max-width: 640px; height: auto; }
 .hero__img {
+  /* .hero is text-align:center, but a display:block element ignores that —
+     it needs explicit auto margins to centre. */
   width: 100%;
-  max-width: 520px;
+  max-width: 340px;
   height: auto;
   border-radius: 18px;
   border: 1px solid var(--line);
   display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* --- install video --- */
@@ -80,12 +84,14 @@ section { max-width: var(--max); margin: 0 auto; padding: 96px 24px; }
 .install-video__lede { color: var(--steel); max-width: 60ch; margin: 0 auto 24px; }
 .install-video__player {
   /* Landscape crop (16:9). No width/height attributes on the <video> element,
-     so CSS owns sizing and nothing fights the max-width. Centre explicitly. */
+     so CSS owns sizing and nothing fights the max-width. Centre explicitly.
+     Display width is deliberately smaller than the 864px file: the source clip
+     is only 360px wide, so showing it smaller keeps it looking sharp. */
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  max-width: 640px;
+  max-width: 460px;
   height: auto;
   aspect-ratio: 16 / 9;   /* reserves the box before the poster loads */
   border-radius: 16px;
