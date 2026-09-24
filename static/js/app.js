@@ -17,6 +17,90 @@
 
   function setStatus(msg) { statusEl.textContent = msg || ''; }
 
+  // ---- Hide / reveal the bar on scroll -------------------------------------
+  // Hidden while the buyer reads the top of the page; revealed once they start
+  // moving down, or as soon as the buy section itself comes into view. Scrolling
+  // back up near the top tucks it away again so the hero stays uncluttered.
+  const bar = document.querySelector('.buybar');
+  const REVEAL_AFTER_PX = 220;   // past the hero, on any screen
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function setBarVisible(visible) {
+    if (!bar) return;
+    bar.dataset.visible = visible ? 'true' : 'false';
+  }
+
+  // Only now that the script is definitely running do we let CSS hide the bar.
+  // Until this point `html.no-js` keeps it visible, so a JS failure can never
+  // leave the buy bar unreachable.
+  document.documentElement.classList.remove('no-js');
+
+  function updateBar() {
+    const y = window.scrollY;
+    const goingDown = y > lastY;
+    const nearTop = y < REVEAL_AFTER_PX;
+
+    // The purchase section always wins: if it is on screen the buyer is looking
+    // at the form, regardless of which way they scrolled to get there. This also
+    // covers programmatic jumps (anchor links, scrollIntoView) where the
+    // direction of travel is not meaningful.
+    const show = buySectionIsVisible() || (!nearTop && goingDown);
+
+    setBarVisible(show);
+
+    lastY = y;
+    ticking = false;
+  }
+
+  // How far the purchase area is from the top of the DOCUMENT, measured on a
+  // clone position rather than the sticky element itself. Measuring the sticky
+  // bar's own getBoundingClientRect always reports "on screen" because it is
+  // pinned to the viewport - that self-reference makes it useless as a signal.
+  let buySectionDocTop = null;
+
+  function measureBuySection() {
+    const target = document.getElementById('buy');
+    if (!target) { buySectionDocTop = null; return; }
+    // Temporarily neutralise sticky so we get the element's true document offset.
+    const prev = target.style.position;
+    const prevVis = target.style.visibility;
+    target.style.position = 'static';
+    target.style.visibility = 'hidden';
+    const top = target.getBoundingClientRect().top + window.scrollY;
+    target.style.position = prev;
+    target.style.visibility = prevVis;
+    buySectionDocTop = top;
+  }
+
+  function buySectionIsVisible() {
+    if (buySectionDocTop === null) return false;
+    const viewportBottomDoc = window.scrollY + window.innerHeight;
+    // Reveal once the top of the purchase area is within ~1 viewport of the fold.
+    return viewportBottomDoc >= buySectionDocTop - window.innerHeight * 0.25;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateBar);
+  }, { passive: true });
+
+  window.addEventListener('resize', () => {
+    measureBuySection();
+    updateBar();
+  }, { passive: true });
+
+  measureBuySection();
+
+  // Any explicit Buy link should also reveal the bar immediately.
+  document.querySelectorAll('a[href="#buy"]').forEach((link) => {
+    link.addEventListener('click', () => setBarVisible(true));
+  });
+
+  setBarVisible(false);
+  updateBar();
+
   // A quote is cached server-side against the variant it was priced for, so
   // switching kits invalidates it — make the buyer re-fetch rather than let
   // them check out and hit a server-side rejection.

@@ -221,6 +221,21 @@ section { max-width: var(--max); margin: 0 auto; padding: 96px 24px; }
   position: sticky; bottom: 0; z-index: 30;
   background: rgba(16,17,19,0.92); backdrop-filter: blur(12px);
   max-width: none; padding: 0; margin: 0;
+  /* Hidden until the buyer scrolls down. The bar is out of the flow of view
+     until then, so it costs no viewport while reading the top of the page. */
+  transform: translateY(100%);
+  transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.buybar[data-visible="true"] { transform: translateY(0); }
+
+/* If JS never runs, the bar must still be usable - otherwise nobody can buy.
+   Default it to visible and only let the script hide it once it has loaded. */
+html.no-js .buybar { transform: translateY(0); }
+
+/* Respect reduced-motion: reveal instantly rather than sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .buybar { transition: none; }
 }
 .buybar__inner {
   max-width: var(--max); margin: 0 auto; padding: 16px 24px;
