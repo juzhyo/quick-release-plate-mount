@@ -41,10 +41,16 @@
     const goingDown = y > lastY;
     const nearTop = y < REVEAL_AFTER_PX;
 
-    // The purchase section always wins: if it is on screen the buyer is looking
-    // at the form, regardless of which way they scrolled to get there. This also
-    // covers programmatic jumps (anchor links, scrollIntoView) where the
-    // direction of travel is not meaningful.
+    // A programmatic jump to the buy point always wins while it is settling.
+    // Without this, the direction logic can hide the bar mid-flight on a long
+    // smooth scroll and the buyer arrives at a hidden bar.
+    if (forceVisible) {
+      setBarVisible(true);
+      lastY = y;
+      ticking = false;
+      return;
+    }
+
     const show = buySectionIsVisible() || (!nearTop && goingDown);
 
     setBarVisible(show);
@@ -52,6 +58,9 @@
     lastY = y;
     ticking = false;
   }
+
+  // Cleared once a jump has settled (or the buyer scrolls by hand again).
+  let forceVisible = false;
 
   // How far the purchase area is from the top of the DOCUMENT, measured on a
   // clone position rather than the sticky element itself. Measuring the sticky
@@ -86,6 +95,11 @@
     requestAnimationFrame(updateBar);
   }, { passive: true });
 
+  // A deliberate wheel/touch drag hands control back to the scroll logic.
+  ['wheel', 'touchmove'].forEach((evt) => {
+    window.addEventListener(evt, () => { forceVisible = false; }, { passive: true });
+  });
+
   window.addEventListener('resize', () => {
     measureBuySection();
     updateBar();
@@ -93,10 +107,45 @@
 
   measureBuySection();
 
-  // Any explicit Buy link should also reveal the bar immediately.
+  // Any explicit Buy link (nav button, hero CTA) scrolls to the point where the
+  // bar lives and reveals it. The bar is sticky and parked at the document
+  // bottom alongside the footer, so "the instance where the footer appears" is
+  // simply the end of the page - there is no separate fixed buy offset.
+  function goToBuy(e) {
+    if (e) e.preventDefault();
+
+    // Scroll to the very bottom (clamped to the real max scroll, which lets us
+    // land precisely rather than relying on the browser's own anchor maths).
+    const maxScroll = Math.max(0, document.body.scrollHeight - window.innerHeight);
+    window.scrollTo({
+      top: maxScroll,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+    });
+
+    // Reveal immediately rather than waiting for the scroll to settle, so the
+    // bar is already in place as the page arrives. forceVisible stops the
+    // scroll handler from hiding it again mid-flight.
+    forceVisible = true;
+    setBarVisible(true);
+
+    // Released once we have arrived (or after a short grace period, in case the
+    // scroll is interrupted and 'scrollend' never fires).
+    clearTimeout(window.__buySettle);
+    window.__buySettle = setTimeout(() => { forceVisible = false; }, 900);
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
   document.querySelectorAll('a[href="#buy"]').forEach((link) => {
-    link.addEventListener('click', () => setBarVisible(true));
+    link.addEventListener('click', goToBuy);
   });
+
+  // Someone landing on /#buy directly should get the same treatment.
+  if (window.location.hash === '#buy') {
+    requestAnimationFrame(() => goToBuy(null));
+  }
 
   setBarVisible(false);
   updateBar();
