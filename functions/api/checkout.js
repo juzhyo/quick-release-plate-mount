@@ -52,10 +52,19 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'variant no longer matches the quoted shipping rate' }, 400);
   }
 
+  // Strip any trailing slash so we never emit a double slash in the redirect
+  // URLs (SITE_URL is often pasted straight from the dashboard with one).
+  const siteUrl = (env.SITE_URL || '').replace(/\/+$/, '');
+  if (!siteUrl) {
+    return json({ error: 'shipping configuration error: SITE_URL is not set' }, 500);
+  }
+
   const params = new URLSearchParams();
   params.append('mode', 'payment');
-  params.append('success_url', `${env.SITE_URL}/order-confirmed?session_id={CHECKOUT_SESSION_ID}`);
-  params.append('cancel_url', `${env.SITE_URL}/#buy`);
+  // Trailing slash matches the URL Hugo actually serves, so Stripe's redirect
+  // lands directly instead of bouncing through a 308.
+  params.append('success_url', `${siteUrl}/order-confirmed/?session_id={CHECKOUT_SESSION_ID}`);
+  params.append('cancel_url', `${siteUrl}/#buy`);
   params.append('line_items[0][price]', priceId);
   params.append('line_items[0][quantity]', '1');
 
@@ -68,6 +77,12 @@ export async function onRequestPost({ request, env }) {
     params.append('line_items[1][price_data][unit_amount]', String(Math.round(quote.amount * 100)));
     params.append('line_items[1][quantity]', '1');
   }
+
+  // Managed Payments (Stripe as merchant of record, for digital goods) is on by
+  // default for some accounts and rejects manual shipping parameters. We ship a
+  // physical kit with our own courier rates, so disable it for this request.
+  // If the account has it switched off, this param is simply ignored.
+  params.append('managed_payments[enabled]', 'false');
 
   params.append('shipping_address_collection[allowed_countries][0]', quote.destinationCountry);
   params.append('metadata[variant]', variant);

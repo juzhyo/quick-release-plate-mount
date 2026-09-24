@@ -13,6 +13,9 @@ node_modules/
 .env.*
 .dev.vars
 
+# Wrangler local dev cache
+.wrangler/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,0 +1,39 @@
+---
+title: "Order confirmed"
+description: "Thanks — your Alisont Design order is confirmed."
+---
+
+<section class="confirmed">
+  <p class="confirmed__eyebrow">Order confirmed</p>
+  <h1 class="confirmed__headline">Thanks — your order's in.</h1>
+  <p class="confirmed__lede">
+    We've received your payment and your kit is queued for printing. You'll get a
+    receipt from Stripe by email, and we'll email you again when it ships.
+  </p>
+
+  <div class="confirmed__panel">
+    <p class="confirmed__note">
+      Nothing else to do. If you don't see the Stripe receipt within a few minutes,
+      check your spam folder before getting in touch.
+    </p>
+    <p class="confirmed__note confirmed__note--muted">
+      Reference: <span id="session-ref">—</span>
+    </p>
+  </div>
+
+  <div class="confirmed__actions">
+    <a href="/" class="confirmed__cta">Back to the shop</a>
+    <a href="mailto:{{ .Site.Params.supportEmail }}" class="confirmed__link">Something wrong? Email us</a>
+  </div>
+</section>
+
+<script>
+  // Stripe appends ?session_id=cs_... to the success_url. Show a short ref so the
+  // customer has something to quote if they contact support.
+  (function () {
+    var el = document.getElementById('session-ref');
+    if (!el) return;
+    var id = new URLSearchParams(window.location.search).get('session_id');
+    el.textContent = id ? id : 'not provided';
+  })();
+</script>

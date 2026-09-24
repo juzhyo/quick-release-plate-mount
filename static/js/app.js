@@ -7,6 +7,12 @@
   const checkoutBtn = document.getElementById('checkout');
   const statusEl = document.getElementById('buybar-status');
 
+  // This script is loaded on every page, but the buy bar only exists on pages
+  // that sell. Bail out early rather than throwing on a null element.
+  if (!variantEl || !countryEl || !postalEl || !getRatesBtn || !ratesBox || !checkoutBtn || !statusEl) {
+    return;
+  }
+
   let selectedQuoteId = null;
 
   function setStatus(msg) { statusEl.textContent = msg || ''; }
